@@ -1,0 +1,27 @@
+services:
+  scanner-service:
+    image: ghcr.io/testdotcom/threats-scanner:latest
+    #build:
+    #  context: ./threats-scanner
+    volumes:
+      - webdav-share:/mnt/webdav
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - REQ_TIMEOUT=${REQ_TIMEOUT}
+      - MAX_CONN=${MAX_CONN}
+    ports:
+      - "8080:${SCANNER_PORT}"
+    deploy:
+      resources:
+        reservations:
+          memory: 4G
+    restart: always
+
+volumes:
+  webdav-share:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "${SCAN_DIR}"
